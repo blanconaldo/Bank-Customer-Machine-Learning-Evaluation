@@ -15,7 +15,7 @@ def load_bank_full_data(filepath='bank-full.csv'):
     Load the bank-full.csv dataset
 
     Parameters:
-    filepath (str): Path to the bank-full.csv file
+    filepath: Path to the bank-full.csv file
 
     Returns:
     pd.DataFrame: Loaded dataset

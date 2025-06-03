@@ -134,7 +134,7 @@ if __name__ == "__main__":
     # Execute main pipeline
     processed_datasets, exploration_summary = main()
 
-    # Optional: Display final summary
+    # Display final summary
     print("\n" + "=" * 80)
     print("🎊 BANK-ADDITIONAL DATASET READY FOR MODEL TRAINING!")
     print("=" * 80)

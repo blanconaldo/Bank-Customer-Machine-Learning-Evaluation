@@ -31,7 +31,7 @@ def explore_bank_additional_data(df):
     Comprehensive data exploration for bank-additional dataset
 
     Parameters:
-    df (pd.DataFrame): The bank-additional dataset
+    df (DataFrame): The bank-additional dataset
 
     Returns:
     dict: Summary statistics and insights

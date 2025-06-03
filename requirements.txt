@@ -20,7 +20,7 @@ optuna>=3.0.0
 # Progress bars and utilities
 tqdm>=4.64.0
 
-# Jupyter notebook support (optional)
+# Jupyter notebook support
 jupyter>=1.0.0
 ipykernel>=6.15.0
 

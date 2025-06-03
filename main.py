@@ -39,7 +39,7 @@ def main():
     get_preprocessing_summary(preprocessing_info_with)
 
     # 5. Preprocess data WITHOUT duration (realistic model)
-    print("\n🔧 STEP 4B: PREPROCESSING WITHOUT DURATION")
+    print("\n STEP 4B: PREPROCESSING WITHOUT DURATION")
     print("-" * 50)
     X_train_no, X_test_no, y_train_no, y_test_no, features_no, preprocessing_info_no = preprocess_bank_full(
         df, include_duration=False, random_state=42
