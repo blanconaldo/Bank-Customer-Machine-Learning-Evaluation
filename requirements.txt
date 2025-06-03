@@ -1,0 +1,36 @@
+# Core data manipulation and analysis
+pandas>=1.5.0
+numpy>=1.21.0
+
+# Machine learning and preprocessing
+scikit-learn>=1.1.0
+imbalanced-learn>=0.9.0
+
+# Data visualization
+matplotlib>=3.5.0
+seaborn>=0.11.0
+
+# Advanced machine learning models
+xgboost>=1.6.0
+lightgbm>=3.3.0
+
+# Hyperparameter optimization
+optuna>=3.0.0
+
+# Progress bars and utilities
+tqdm>=4.64.0
+
+# Jupyter notebook support (optional)
+jupyter>=1.0.0
+ipykernel>=6.15.0
+
+# Web interface for model deployment
+streamlit>=1.15.0
+flask>=2.2.0
+
+# Additional utilities
+scipy>=1.9.0
+joblib>=1.1.0
+
+# For advanced statistical analysis
+statsmodels>=0.13.0
