@@ -4,7 +4,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.model_selection import train_test_split
-# from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, roc_auc_score, roc_curve
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
 import warnings
 
 warnings.filterwarnings('ignore')
@@ -476,15 +478,24 @@ def preprocess_bank_additional(df, include_duration=True, test_size=0.2, random_
     print(f"\n6️⃣ TRAIN-TEST SPLIT")
     print("-" * 40)
 
-    X_train, X_test, y_train, y_test = train_test_split(
+    X_temp, X_test, y_temp, y_test = train_test_split(
         X_processed, y_encoded,
-        test_size=test_size,
+        test_size=0.1,  # 10% for final testing
         random_state=random_state,
-        stratify=y_encoded  # Maintain class distribution
+        stratify=y_encoded
     )
 
-    print(f"Training set: {X_train.shape[0]} samples")
-    print(f"Test set: {X_test.shape[0]} samples")
+    # Second split: divide remaining 90% into train (80%) and validation (10%)
+    X_train, X_val, y_train, y_val = train_test_split(
+        X_temp, y_temp,
+        test_size=0.111,  # 10/90 = 0.111 (10% of total data)
+        random_state=random_state,
+        stratify=y_temp
+    )
+
+    print(f"Training set: {X_train.shape[0]} samples ({X_train.shape[0] / len(X_processed) * 100:.1f}%)")
+    print(f"Validation set: {X_val.shape[0]} samples ({X_val.shape[0] / len(X_processed) * 100:.1f}%)")
+    print(f"Test set: {X_test.shape[0]} samples ({X_test.shape[0] / len(X_processed) * 100:.1f}%)")
     print(f"Training target distribution: {pd.Series(y_train).value_counts().to_dict()}")
     print(f"Test target distribution: {pd.Series(y_test).value_counts().to_dict()}")
 
@@ -507,7 +518,7 @@ def preprocess_bank_additional(df, include_duration=True, test_size=0.2, random_
 
     print(f"\n✅ PREPROCESSING COMPLETED SUCCESSFULLY!")
 
-    return X_train, X_test, y_train, y_test, feature_names, preprocessing_info
+    return X_train, X_val, X_test, y_train, y_val, y_test, feature_names, preprocessing_info
 
 
 def get_preprocessing_summary_additional(preprocessing_info):
@@ -548,3 +559,50 @@ def get_preprocessing_summary_additional(preprocessing_info):
     print(f"  Economic indicators scaling: StandardScaler (separate)")
     print(f"  Categorical encoding: One-hot encoding with drop_first=True")
     print(f"  Train-test split: Stratified to maintain class balance")
+
+
+def train_evaluate_logistic_regression(X_train, y_train, X_val, y_val, X_test, y_test):
+    """
+    Trains a Logistic Regression classifier and evaluates it on validation and test sets.
+    Returns:
+        model: Trained Logistic Regression model
+        val_accuracy: Accuracy on the validation set
+        test_accuracy: Accuracy on the test set
+    """
+    model = LogisticRegression(max_iter=1000, random_state=42)
+    model.fit(X_train, y_train)
+
+    val_preds = model.predict(X_val)
+    test_preds = model.predict(X_test)
+
+    val_accuracy = accuracy_score(y_val, val_preds)
+    test_accuracy = accuracy_score(y_test, test_preds)
+
+    print(f"Validation Accuracy: {val_accuracy:.4f}")
+    print(f"Test Accuracy: {test_accuracy:.4f}")
+
+    return model, val_accuracy, test_accuracy
+
+
+def train_evaluate_decision_tree(X_train, y_train, X_val, y_val, X_test, y_test):
+    """
+    Trains a simple Decision Tree classifier and evaluates it on validation and test sets.
+    Returns:
+        model: Trained Decision Tree model
+        val_accuracy: Accuracy on the validation set
+        test_accuracy: Accuracy on the test set
+    """
+    # Keep the tree small/simple for speed and baseline
+    model = DecisionTreeClassifier(max_depth=5, random_state=42)
+    model.fit(X_train, y_train)
+
+    val_preds = model.predict(X_val)
+    test_preds = model.predict(X_test)
+
+    val_accuracy = accuracy_score(y_val, val_preds)
+    test_accuracy = accuracy_score(y_test, test_preds)
+
+    print(f"Validation Accuracy (Decision Tree): {val_accuracy:.4f}")
+    print(f"Test Accuracy (Decision Tree): {test_accuracy:.4f}")
+
+    return model, val_accuracy, test_accuracy

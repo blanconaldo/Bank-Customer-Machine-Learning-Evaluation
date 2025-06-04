@@ -30,7 +30,7 @@ def main():
     # 4. Preprocess data WITH duration (benchmark model)
     print("\n🔧 STEP 4A: PREPROCESSING WITH DURATION")
     print("-" * 50)
-    X_train_with, X_test_with, y_train_with, y_test_with, features_with, preprocessing_info_with = preprocess_bank_additional(
+    X_train_with, X_val_with, X_test_with, y_train_with, y_val_with, y_test_with, features_with, preprocessing_info_with = preprocess_bank_additional(
         df, include_duration=True, random_state=42
     )
 
@@ -40,12 +40,35 @@ def main():
     # 5. Preprocess data WITHOUT duration (realistic model)
     print("\n🔧 STEP 4B: PREPROCESSING WITHOUT DURATION")
     print("-" * 50)
-    X_train_no, X_test_no, y_train_no, y_test_no, features_no, preprocessing_info_no = preprocess_bank_additional(
+    X_train_no, X_val_no, X_test_no, y_train_no, y_val_no, y_test_no, features_no, preprocessing_info_no = preprocess_bank_additional(
         df, include_duration=False, random_state=42
     )
 
     # Display preprocessing summary
     get_preprocessing_summary_additional(preprocessing_info_no)
+
+    print("\n🤖 TRAINING LOGISTIC REGRESSION (WITH duration)")
+    model_with, val_acc_with, test_acc_with = train_evaluate_logistic_regression(
+        X_train_with, y_train_with, X_val_with, y_val_with, X_test_with, y_test_with
+    )
+
+    # 6. Train and evaluate Logistic Regression WITHOUT duration
+    print("\n🤖 TRAINING LOGISTIC REGRESSION (WITHOUT duration)")
+    model_no, val_acc_no, test_acc_no = train_evaluate_logistic_regression(
+        X_train_no, y_train_no, X_val_no, y_val_no, X_test_no, y_test_no
+    )
+
+    # 9. Train and evaluate Decision Tree WITH duration
+    print("\n🤖 TRAINING DECISION TREE (WITH duration)")
+    dt_model_with, dt_val_acc_with, dt_test_acc_with = train_evaluate_decision_tree(
+        X_train_with, y_train_with, X_val_with, y_val_with, X_test_with, y_test_with
+    )
+    # 10. Train and evaluate Decision Tree WITHOUT duration
+    print("\n🤖 TRAINING DECISION TREE (WITHOUT duration)")
+    dt_model_no, dt_val_acc_no, dt_test_acc_no = train_evaluate_decision_tree(
+        X_train_no, y_train_no, X_val_no, y_val_no, X_test_no, y_test_no
+    )
+
 
     # 6. Summary of prepared datasets
     print("\n📋 STEP 5: DATASET PREPARATION SUMMARY")
@@ -111,16 +134,20 @@ def main():
     datasets = {
         'with_duration': {
             'X_train': X_train_with,
+            'X_val': X_val_with,
             'X_test': X_test_with,
             'y_train': y_train_with,
+            'y_val': y_val_with,
             'y_test': y_test_with,
             'features': features_with,
             'preprocessing_info': preprocessing_info_with
         },
         'without_duration': {
             'X_train': X_train_no,
+            'X_val': X_val_no,
             'X_test': X_test_no,
             'y_train': y_train_no,
+            'y_val': y_val_no,
             'y_test': y_test_no,
             'features': features_no,
             'preprocessing_info': preprocessing_info_no
